@@ -21,3 +21,12 @@ class Post(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     image = models.ImageField()
     likes = models.IntegerField()
+
+
+class Comment(models.Model):
+    text = models.CharField(max_length=255)
+    created_date = models.DateField(auto_now_add=True, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.text}'

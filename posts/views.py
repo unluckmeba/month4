@@ -19,6 +19,11 @@ def now_date_view(request):
         return HttpResponse(f'Now date: {date.today()}')
 
 
+def main_page_view(request):
+    if request.method == 'GET':
+        return render(request, 'layouts/main.html')
+
+
 def hashtags_view(request):
     if request.method == 'GET':
         data = {
@@ -33,3 +38,26 @@ def posts_view(request):
             'posts': Post.objects.all()
         }
         return render(request, 'posts/posts.html', context=data)
+
+
+def post_detail_view(request, id):
+    if request.method == 'GET':
+        post = Post.objects.get(id=id)
+
+        context = {
+            'post': post
+        }
+
+        return render(request, 'posts/post_detail.html', context=context)
+
+
+class PostDetailView(DetailView, CreateView):
+    template_name = 'posts/post_detail.html'
+    queryset = Post.objects.all()
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        return {
+            'post': self.get_object(),
+            'comments': Comment.objects.filter(post=self.get_object())
+        }
