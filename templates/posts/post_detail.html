@@ -42,27 +42,30 @@
 
 
     <div class="post">
-        <div class="image">
-            <img src="/media/{{ post.image }}/" alt="">
+        {% if post.image %}
+            <img src="/media/{{ post.image }}" alt="">
+        {% else %}
+            <img src="{% static 'img.png' %}" alt="">
+        {% endif %}
+        <h1>{{ post.title }}</h1>
+        <h5>{{ post.description }}</h5>
+        <div class="dates">
+            <h6>{{ post.created_date }}</h6>
+            <h6>{{ post.modified_date }}</h6>
         </div>
-        <div>
-            <div style="display:flex; justify-content: space-between">
-                <h1>{{ post.title }}</h1>
-                <h3>{{ post.author.username }}</h3>
-            </div>
-            <h5>{{ post.description }}</h5>
-            <h5>{{ post.category.title }}</h5>
-            <div>
-                <p>{{ post.price }}</p>
-            </div>
+        <p class="comments_title">Comments</p>
+        <form action="/posts/{{ post.id }}/" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Add Comment">
+        </form>
+        <div class="comments">
+            {% for comment in comments %}
+                <div class="comment_block">
+                    <h6>{{ comment.text }}</h6>
+                    <p>{{ comment.created_date }}</p>
+                </div>
+            {% endfor %}
         </div>
-    </div>
-    <div class="comments">
-        {% for comment in comments %}
-            <div>
-                <p class="author">{{ comment.author.username }}</p>
-                <p class="text">{{ comment.text }}</p>
-            </div>
-        {% endfor %}
     </div>
 {% endblock %}
